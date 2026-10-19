@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#4DB6C0</color>
+    <color name="primary_dark">#0B3A40</color>
+    <color name="primary_container">#12373C</color>
+    <color name="on_primary">#00262A</color>
+    <color name="background">#121A1C</color>
+    <color name="surface">#1C272A</color>
+    <color name="text_primary">#E6EEF0</color>
+    <color name="text_secondary">#A5B5BA</color>
+    <color name="banner_online">#1B3A24</color>
+    <color name="banner_offline">#402024</color>
+    <color name="banner_warning">#40321A</color>
+</resources>

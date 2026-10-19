@@ -1,0 +1,108 @@
+rules_version = '2';
+
+// AlphaSync – Firestore Security Rules
+// Laboratory staff (role LAB_STAFF) may only touch data belonging to THEIR laboratory.
+// ADMIN / HEALTHCARE_MANAGER roles are used by the web dashboard; the mobile app never uses them.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- helpers ----------
+    function signedIn() { return request.auth != null; }
+    function profilePath() { return /databases/$(database)/documents/users/$(request.auth.uid); }
+    function hasProfile() { return signedIn() && exists(profilePath()); }
+    function me() { return get(profilePath()).data; }
+    function isStaff() { return hasProfile() && me().role == 'LAB_STAFF'; }
+    function isAdmin() { return hasProfile() && me().role == 'ADMIN'; }
+    function isManager() { return hasProfile() && me().role == 'HEALTHCARE_MANAGER'; }
+    function privilegedRead() { return isAdmin() || isManager(); }
+    function myLab() { return me().laboratoryId; }
+    function staffOfLab(labId) { return isStaff() && labId == myLab(); }
+
+    function validInt(v) { return v is int && v >= 0 && v <= 9999999; }
+
+    function validInventory(d) {
+      return d.keys().hasOnly(['laboratoryId','itemName','quantity','minimumThreshold','expiryDate','updatedAt','updatedBy'])
+        && d.keys().hasAll(['laboratoryId','itemName','quantity','minimumThreshold','expiryDate','updatedAt','updatedBy'])
+        && d.itemName is string && d.itemName.size() > 0 && d.itemName.size() <= 80
+        && validInt(d.quantity) && validInt(d.minimumThreshold)
+        && d.expiryDate is string && d.expiryDate.size() == 10
+        && d.updatedAt is int
+        && d.updatedBy == request.auth.uid;
+    }
+
+    function validDisease(d) {
+      return d.keys().hasOnly(['laboratoryId','diseaseName','dateReported','severity','numberOfCases','notes','createdBy','createdAt'])
+        && d.keys().hasAll(['laboratoryId','diseaseName','dateReported','severity','numberOfCases','notes','createdBy','createdAt'])
+        && d.diseaseName is string && d.diseaseName.size() > 0 && d.diseaseName.size() <= 80
+        && d.dateReported is string && d.dateReported.size() == 10
+        && d.severity in ['Low','Moderate','High','Critical']
+        && validInt(d.numberOfCases)
+        && d.notes is string && d.notes.size() <= 500
+        && d.createdBy == request.auth.uid
+        && d.createdAt is int;
+    }
+
+    // ---------- users ----------
+    match /users/{userId} {
+      allow read: if signedIn() && (request.auth.uid == userId || privilegedRead());
+      // A user may only update their own FCM token (never role / laboratory).
+      allow update: if signedIn() && request.auth.uid == userId
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['fcmToken']);
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ---------- laboratories ----------
+    match /laboratories/{labId} {
+      allow read: if staffOfLab(labId) || privilegedRead();
+      allow write: if isAdmin();
+    }
+
+    // ---------- inventory ----------
+    match /inventory/{inventoryId} {
+      allow read: if privilegedRead() || staffOfLab(resource.data.laboratoryId);
+      allow create: if staffOfLab(request.resource.data.laboratoryId) && validInventory(request.resource.data);
+      allow update: if staffOfLab(resource.data.laboratoryId)
+                    && request.resource.data.laboratoryId == resource.data.laboratoryId
+                    && validInventory(request.resource.data);
+      allow delete: if isAdmin();   // staff can never delete stock records
+    }
+
+    // ---------- disease records ----------
+    match /diseaseRecords/{recordId} {
+      allow read: if privilegedRead() || staffOfLab(resource.data.laboratoryId);
+      allow create: if staffOfLab(request.resource.data.laboratoryId) && validDisease(request.resource.data);
+      // Staff cannot edit submitted records. An identical re-write is allowed so a retried
+      // offline upload (same document id) is harmless.
+      allow update: if staffOfLab(resource.data.laboratoryId) && request.resource.data == resource.data;
+      allow delete: if isAdmin();
+    }
+
+    // ---------- alerts ----------
+    match /alerts/{alertId} {
+      allow read: if privilegedRead() || staffOfLab(resource.data.laboratoryId);
+      // The app may raise low/critical stock alerts for its own laboratory.
+      allow create: if (staffOfLab(request.resource.data.laboratoryId)
+                        && request.resource.data.keys().hasOnly(['title','message','type','laboratoryId','createdAt','read'])
+                        && request.resource.data.type in ['LOW_STOCK','CRITICAL_STOCK']
+                        && request.resource.data.read == false)
+                    || isAdmin() || isManager();
+      // Staff may only flip "read" to true.
+      allow update: if (staffOfLab(resource.data.laboratoryId)
+                        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read'])
+                        && request.resource.data.read == true)
+                    || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ---------- sync audit trail ----------
+    match /syncRecords/{syncId} {
+      allow read: if (signedIn() && resource.data.userId == request.auth.uid) || privilegedRead();
+      allow create, update: if staffOfLab(request.resource.data.laboratoryId)
+                    && request.resource.data.userId == request.auth.uid
+                    && request.resource.data.keys().hasOnly(['userId','laboratoryId','recordType','recordId','status','timestamp']);
+    }
+
+    // ---------- everything else is denied ----------
+    match /{document=**} { allow read, write: if false; }
+  }
+}

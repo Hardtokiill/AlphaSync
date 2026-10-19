@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.apache.org/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="16dp">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/capture_disease_data" android:textSize="22sp" android:textStyle="bold" android:textColor="@color/text_primary"/>
+
+        <com.google.android.material.textfield.TextInputLayout android:id="@+id/tilDisease"
+            android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="20dp"
+            android:hint="Disease name" style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/etDisease"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:inputType="textCapWords" android:maxLength="80"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout android:id="@+id/tilDate"
+            android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp"
+            android:hint="Date reported" app:endIconMode="custom" app:endIconDrawable="@android:drawable/ic_menu_my_calendar"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/etDate"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:focusable="false" android:cursorVisible="false" android:inputType="none"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout android:id="@+id/tilSeverity"
+            android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp"
+            android:hint="Severity" style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+            <AutoCompleteTextView android:id="@+id/actSeverity" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:inputType="none"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout android:id="@+id/tilCases"
+            android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp"
+            android:hint="Number of cases" style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/etCases"
+                android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="number" android:maxLength="7"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout android:id="@+id/tilNotes"
+            android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp"
+            android:hint="Notes (optional)" style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/etNotes"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:inputType="textMultiLine|textCapSentences" android:minLines="3" android:gravity="top" android:maxLength="500"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator android:id="@+id/progress"
+            android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp"
+            android:indeterminate="true" android:visibility="invisible"/>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" android:orientation="horizontal">
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnCancel"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp" android:layout_height="56dp" android:layout_weight="1"
+                android:layout_marginEnd="8dp" android:text="@string/cancel"/>
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnSubmit"
+                android:layout_width="0dp" android:layout_height="56dp" android:layout_weight="1"
+                android:layout_marginStart="8dp" android:text="@string/submit"/>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

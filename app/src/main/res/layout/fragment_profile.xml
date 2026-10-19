@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.apache.org/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="16dp">
+        <TextView android:id="@+id/tvName" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textSize="24sp" android:textStyle="bold" android:textColor="@color/text_primary"/>
+        <TextView android:id="@+id/tvRole" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textColor="@color/primary"/>
+        <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginTop="16dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="16dp">
+                <TextView android:id="@+id/tvEmail" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:textColor="@color/text_primary"/>
+                <TextView android:id="@+id/tvLab" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp" android:textColor="@color/text_primary"/>
+                <TextView android:id="@+id/tvAccount" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp" android:lineSpacingExtra="3dp" android:textColor="@color/text_secondary"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnSettings"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent" android:layout_height="56dp"
+            android:layout_marginTop="20dp" android:text="Settings"/>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnHelp"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent" android:layout_height="56dp"
+            android:layout_marginTop="8dp" android:text="Help"/>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnChangePassword"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent" android:layout_height="56dp" android:layout_marginTop="8dp"
+            android:text="@string/change_password"/>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnLogout"
+            android:layout_width="match_parent" android:layout_height="56dp" android:layout_marginTop="8dp"
+            android:text="@string/logout"/>
+    </LinearLayout>
+</ScrollView>

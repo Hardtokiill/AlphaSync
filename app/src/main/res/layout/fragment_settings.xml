@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="16dp">
+
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Settings" android:textSize="22sp" android:textStyle="bold"
+            android:textColor="@color/text_primary"/>
+
+        <!-- Account -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" android:text="Account" android:textStyle="bold"
+            android:textColor="@color/primary"/>
+        <com.google.android.material.textfield.TextInputLayout android:id="@+id/tilName"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" android:hint="Display name"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/etName"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:inputType="textPersonName|textCapWords" android:maxLength="60"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnSaveName"
+            android:layout_width="match_parent" android:layout_height="56dp"
+            android:layout_marginTop="8dp" android:text="Save name"/>
+
+        <!-- Appearance -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="24dp" android:text="Appearance" android:textStyle="bold"
+            android:textColor="@color/primary"/>
+        <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginTop="8dp">
+            <RadioGroup android:id="@+id/rgTheme" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp">
+                <RadioButton android:id="@+id/rbSystem" android:layout_width="match_parent"
+                    android:layout_height="48dp" android:text="System default"
+                    android:textColor="@color/text_primary"/>
+                <RadioButton android:id="@+id/rbLight" android:layout_width="match_parent"
+                    android:layout_height="48dp" android:text="Light"
+                    android:textColor="@color/text_primary"/>
+                <RadioButton android:id="@+id/rbDark" android:layout_width="match_parent"
+                    android:layout_height="48dp" android:text="Dark"
+                    android:textColor="@color/text_primary"/>
+            </RadioGroup>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Notifications -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="24dp" android:text="Notifications" android:textStyle="bold"
+            android:textColor="@color/primary"/>
+        <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginTop="8dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical" android:padding="16dp">
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Alert notifications" android:textStyle="bold"
+                            android:textColor="@color/text_primary"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Turn all alerts on this device on or off"
+                            android:textColor="@color/text_secondary" android:textSize="12sp"/>
+                    </LinearLayout>
+                    <com.google.android.material.materialswitch.MaterialSwitch android:id="@+id/switchNotifications"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#22808080"/>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical" android:padding="16dp">
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Low-stock alerts" android:textColor="@color/text_primary"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Antivenom running low or critical"
+                            android:textColor="@color/text_secondary" android:textSize="12sp"/>
+                    </LinearLayout>
+                    <com.google.android.material.materialswitch.MaterialSwitch android:id="@+id/switchStock"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#22808080"/>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical" android:padding="16dp">
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Disease alerts" android:textColor="@color/text_primary"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="New disease surveillance alerts"
+                            android:textColor="@color/text_secondary" android:textSize="12sp"/>
+                    </LinearLayout>
+                    <com.google.android.material.materialswitch.MaterialSwitch android:id="@+id/switchDisease"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Data & sync -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="24dp" android:text="Data and sync" android:textStyle="bold"
+            android:textColor="@color/primary"/>
+        <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginTop="8dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical" android:padding="16dp">
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Sync over Wi-Fi only" android:textColor="@color/text_primary"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Saves mobile data. Synchronise Now still works anywhere."
+                        android:textColor="@color/text_secondary" android:textSize="12sp"/>
+                </LinearLayout>
+                <com.google.android.material.materialswitch.MaterialSwitch android:id="@+id/switchWifiOnly"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnSeed"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent" android:layout_height="56dp"
+            android:layout_marginTop="24dp" android:text="Load demo data (developer)"/>
+
+        <!-- About -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="24dp" android:text="About" android:textStyle="bold"
+            android:textColor="@color/primary"/>
+        <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginTop="8dp" android:layout_marginBottom="16dp">
+            <TextView android:id="@+id/tvAbout" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:padding="16dp" android:lineSpacingExtra="4dp"
+                android:textColor="@color/text_primary"/>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+</ScrollView>

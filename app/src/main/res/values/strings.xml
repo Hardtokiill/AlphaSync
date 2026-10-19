@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AlphaSync</string>
+    <string name="tagline">Integrated Health Intelligence and Operations Management</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Log in</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_inventory">Inventory</string>
+    <string name="nav_disease">Disease</string>
+    <string name="nav_alerts">Alerts</string>
+    <string name="nav_profile">Profile</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="submit">Submit</string>
+    <string name="search_items">Search items</string>
+    <string name="add_update_stock">Add / Update Stock</string>
+    <string name="capture_disease_data">Capture Disease Data</string>
+    <string name="sync_now">Synchronise Now</string>
+    <string name="logout">Log out</string>
+    <string name="change_password">Change password</string>
+    <string name="empty_inventory">No inventory items yet. Tap “Add / Update Stock” to add one.</string>
+    <string name="empty_disease">No disease records yet.</string>
+    <string name="empty_alerts">No alerts. You are all caught up.</string>
+    <string name="offline_saved">No internet connection. Your information has been saved and will synchronise when connection is restored.</string>
+    <string name="online_saved">Saved and synchronised successfully.</string>
+    <string name="firebase_error_saved_locally">Could not reach the server. Your information has been saved on this device and will synchronise automatically.</string>
+    <string name="google_web_client_id">94107543253-b5mv19akulml9jquthontimjq5prgbml.apps.googleusercontent.com</string>
+</resources>

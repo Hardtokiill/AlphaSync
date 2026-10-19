@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.apache.org/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="16dp">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Network &amp; Synchronisation" android:textSize="22sp" android:textStyle="bold" android:textColor="@color/text_primary"/>
+        <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginTop="16dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="16dp">
+                <TextView android:id="@+id/tvConnection" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:textSize="18sp" android:textStyle="bold"/>
+                <TextView android:id="@+id/tvLastSync" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp" android:textColor="@color/text_primary"/>
+                <TextView android:id="@+id/tvPendingCount" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp" android:textColor="@color/text_primary"/>
+                <TextView android:id="@+id/tvSyncState" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp" android:textColor="@color/text_primary"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+        <com.google.android.material.progressindicator.LinearProgressIndicator android:id="@+id/progress"
+            android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp"
+            android:indeterminate="true" android:visibility="invisible"/>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnSyncNow"
+            android:layout_width="match_parent" android:layout_height="56dp" android:layout_marginTop="8dp"
+            android:text="@string/sync_now"/>
+    </LinearLayout>
+</ScrollView>

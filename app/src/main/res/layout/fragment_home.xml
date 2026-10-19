@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.apache.org/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="match_parent" android:clipToPadding="false">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="16dp">
+
+        <TextView android:id="@+id/tvGreeting" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textColor="@color/text_primary" android:textSize="22sp" android:textStyle="bold"/>
+        <TextView android:id="@+id/tvLabName" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textColor="@color/text_secondary" android:textSize="15sp"/>
+
+        <!-- Network status banner (tap to open the Network Status screen) -->
+        <LinearLayout android:id="@+id/cardNetwork" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" android:orientation="vertical" android:padding="14dp"
+            android:background="@drawable/bg_banner_online" android:clickable="true" android:focusable="true">
+            <TextView android:id="@+id/tvNetworkStatus" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:textStyle="bold" android:textSize="16sp" android:textColor="@color/text_primary"/>
+            <TextView android:id="@+id/tvPending" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="2dp" android:textColor="@color/text_secondary"/>
+        </LinearLayout>
+
+        <!-- Low stock warning -->
+        <com.google.android.material.card.MaterialCardView android:id="@+id/cardLowStock"
+            android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp"
+            android:visibility="gone" app:cardBackgroundColor="@color/banner_warning" app:strokeColor="@color/status_low" app:strokeWidth="1dp">
+            <TextView android:id="@+id/tvLowStock" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:padding="14dp" android:textColor="@color/text_primary" android:textStyle="bold"/>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="20dp"
+            android:text="Antivenom stock summary" android:textStyle="bold" android:textSize="16sp" android:textColor="@color/text_primary"/>
+        <com.google.android.material.card.MaterialCardView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="16dp">
+                <TextView android:id="@+id/tvTotalUnits" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:textSize="28sp" android:textStyle="bold" android:textColor="@color/primary"/>
+                <TextView android:id="@+id/tvStockBreakdown" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp" android:lineSpacingExtra="4dp" android:textColor="@color/text_secondary"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="20dp"
+            android:text="Recent alerts" android:textStyle="bold" android:textSize="16sp" android:textColor="@color/text_primary"/>
+        <LinearLayout android:id="@+id/recentAlertsContainer" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginTop="8dp" android:orientation="vertical"/>
+        <TextView android:id="@+id/tvNoAlerts" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/empty_alerts" android:textColor="@color/text_secondary" android:visibility="gone"/>
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,9 @@
+*.iml
+.gradle
+/local.properties
+/.idea
+/build
+/app/build
+.DS_Store
+# Firebase config is per-developer; never commit real project credentials
+app/google-services.json
