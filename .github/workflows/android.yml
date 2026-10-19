@@ -1,0 +1,73 @@
+name: Android CI
+
+# Builds the app and runs the unit tests on every push and pull request.
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      # The real google-services.json is private and not in the repository,
+      # so CI uses a harmless placeholder that lets the project compile.
+      - name: Create placeholder google-services.json
+        run: |
+          cat > app/google-services.json <<'JSON'
+          {
+            "project_info": {
+              "project_number": "000000000000",
+              "project_id": "alphasync-ci",
+              "storage_bucket": "alphasync-ci.appspot.com"
+            },
+            "client": [
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:000000000000:android:0000000000000000",
+                  "android_client_info": { "package_name": "com.example.alphasync" }
+                },
+                "oauth_client": [
+                  { "client_id": "000000000000-placeholder.apps.googleusercontent.com", "client_type": 3 }
+                ],
+                "api_key": [ { "current_key": "AIzaSyPlaceholderKeyForCiOnly0000000000" } ],
+                "services": { "appinvite_service": { "other_platform_oauth_client": [] } }
+              }
+            ],
+            "configuration_version": "1"
+          }
+          JSON
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x gradlew
+
+      - name: Run unit tests
+        run: ./gradlew testDebugUnitTest
+
+      - name: Build debug APK
+        run: ./gradlew assembleDebug
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-report
+          path: app/build/reports/tests/testDebugUnitTest/
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: alphasync-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
