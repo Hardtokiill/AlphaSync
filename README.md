@@ -68,3 +68,5 @@ Run unit tests: `./gradlew test` (validation rules). Manual:
 - Lists are sorted client-side (no composite indexes needed); fine for a lab's data volume, add `limit()`/paging if it grows.
 - "Laboratory network connection unavailable" is shown live as the Offline banner (Home / Network Status) rather than as a stored alert.
 - If a lab has no alert documents yet the Alerts tab shows its empty state.
+Link to Video Demonstration
+http://www.youtube.com/@WandileMogapi
