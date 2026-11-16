@@ -2,6 +2,7 @@ package com.example.alphasync.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 
@@ -26,8 +27,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/** Registration for laboratory staff: creates the Firebase login, then the users/{uid} profile. */
+/**
+ * Registration for laboratory staff.
+ * 1) Firebase Authentication creates the account (password hashed by Firebase).
+ * 2) A users/{uid} profile is written with role LAB_STAFF and the chosen laboratory.
+ * 3) The new user is signed OUT again and sent to the login screen, so registering and logging in are separate steps.
+ */
 public class RegisterActivity extends AppCompatActivity {
+    private static final String TAG = "AlphaSync/Register";
+
     private ActivityRegisterBinding b;
     private final List<String> labIds = new ArrayList<>();
     private final List<String> labNames = new ArrayList<>();
@@ -63,6 +71,7 @@ public class RegisterActivity extends AppCompatActivity {
                             String name = d.getString("name");
                             if (name != null) { labIds.add(d.getId()); labNames.add(name); }
                         }
+                        Log.i(TAG, "Loaded " + labNames.size() + " laboratories");
                         b.actLab.setAdapter(new ArrayAdapter<>(RegisterActivity.this,
                                 android.R.layout.simple_list_item_1, labNames));
                         if (labNames.isEmpty()) showError("No laboratories have been set up yet.");
@@ -92,7 +101,7 @@ public class RegisterActivity extends AppCompatActivity {
             b.tilPassword.setError("Use at least 8 characters, with a letter and a number"); ok = false;
         }
         if (!pw.equals(confirm)) { b.tilConfirm.setError("Passwords do not match"); ok = false; }
-        if (!ok) return;
+        if (!ok) { Log.w(TAG, "Registration blocked by validation"); return; }
 
         if (!NetworkUtils.isOnline(this)) {
             showError("No internet connection. Registration needs a connection.");
@@ -101,6 +110,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         final String labId = labIds.get(labIndex);
         setBusy(true);
+        Log.i(TAG, "Creating account for laboratory " + labId);
 
         // Step 1: create the login (Firebase hashes the password; we never store it)
         FirebaseManager.call(FirebaseManager.auth().createUserWithEmailAndPassword(email, pw), 20000,
@@ -108,6 +118,7 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override public void onSuccess(AuthResult r) {
                         FirebaseUser fu = r.getUser();
                         if (fu == null) { setBusy(false); showError("Something went wrong. Please try again."); return; }
+                        Log.i(TAG, "Login account created, saving staff profile");
 
                         // Step 2: create the staff profile document
                         Map<String, Object> profile = new HashMap<>();
@@ -119,12 +130,21 @@ public class RegisterActivity extends AppCompatActivity {
                         FirebaseManager.call(FirebaseManager.db().collection("users").document(fu.getUid()).set(profile),
                                 15000, new FirebaseManager.Callback<Void>() {
                                     @Override public void onSuccess(Void v) {
+                                        Log.i(TAG, "Registration complete - signing out so the user logs in");
+                                        // Step 3: Firebase signed the new user in automatically. Sign out, then
+                                        // return to the login screen so registering and logging in are separate steps.
+                                        FirebaseManager.auth().signOut();
                                         setBusy(false);
-                                        startActivity(new Intent(RegisterActivity.this, MainActivity.class)
-                                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                                        Intent i = new Intent(RegisterActivity.this, LoginActivity.class)
+                                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        i.putExtra(LoginActivity.EXTRA_MESSAGE, "Account created successfully. Please log in.");
+                                        i.putExtra("success", true);
+                                        i.putExtra("email", email);
+                                        startActivity(i);
                                         finish();
                                     }
                                     @Override public void onError(Exception e) {
+                                        Log.e(TAG, "Profile save failed, rolling back account: " + e.getMessage());
                                         fu.delete(); // roll back so no half-registered account is left
                                         FirebaseManager.auth().signOut();
                                         setBusy(false);
@@ -134,6 +154,7 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                     @Override public void onError(Exception e) {
                         setBusy(false);
+                        Log.w(TAG, "Account creation failed: " + e.getClass().getSimpleName());
                         if (e instanceof FirebaseAuthUserCollisionException)
                             b.tilEmail.setError("An account with this email already exists");
                         else if (e instanceof FirebaseAuthWeakPasswordException)

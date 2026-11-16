@@ -36,10 +36,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import androidx.credentials.exceptions.GetCredentialCancellationException;
+import androidx.credentials.exceptions.NoCredentialException;
+import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption;
+import android.util.Log;
 /** Screen 1 – Login with Firebase Authentication (email/password) + password reset. */
 public class LoginActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "message";
     private ActivityLoginBinding b;
+
+    private static final String TAG = "AlphaSync/Login";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +64,12 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         String msg = getIntent().getStringExtra(EXTRA_MESSAGE);
-        if (msg != null) showError(msg);
+        if (msg != null) {
+            if (getIntent().getBooleanExtra("success", false)) info(msg); // green "Account created" message
+            else showError(msg);                                           // red error message
+        }
+        String prefill = getIntent().getStringExtra("email");
+        if (prefill != null && b.etEmail != null) b.etEmail.setText(prefill);
 
         b.btnLogin.setOnClickListener(v -> attemptLogin());
         b.btnForgot.setOnClickListener(v -> sendReset());
@@ -112,27 +124,41 @@ public class LoginActivity extends AppCompatActivity {
         clearErrors();
         if (!NetworkUtils.isOnline(this)) { showError("No internet connection. Google sign-in needs a connection."); return; }
 
-        GetGoogleIdOption option = new GetGoogleIdOption.Builder()
-                .setFilterByAuthorizedAccounts(false)
-                .setServerClientId(getString(com.example.alphasync.R.string.google_web_client_id))
-                .build();
+        // "Sign in with Google" button flow: always shows the account chooser
+        GetSignInWithGoogleOption option = new GetSignInWithGoogleOption.Builder(
+                getString(com.example.alphasync.R.string.default_web_client_id)).build();
         GetCredentialRequest request = new GetCredentialRequest.Builder().addCredentialOption(option).build();
 
         setBusy(true);
+        Log.i(TAG, "Starting Google sign-in");
         CredentialManager.create(this).getCredentialAsync(this, request, new CancellationSignal(),
                 ContextCompat.getMainExecutor(this),
                 new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
                     @Override public void onResult(GetCredentialResponse result) {
-                        Credential c = result.getCredential();
-                        if (c instanceof CustomCredential
-                                && GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL.equals(c.getType())) {
-                            GoogleIdTokenCredential g = GoogleIdTokenCredential.createFrom(((CustomCredential) c).getData());
-                            firebaseAuthWithGoogle(g.getIdToken());
-                        } else { setBusy(false); showError("Google sign-in returned an unexpected result."); }
+                        try {
+                            Credential c = result.getCredential();
+                            if (c instanceof CustomCredential
+                                    && GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL.equals(c.getType())) {
+                                GoogleIdTokenCredential g = GoogleIdTokenCredential.createFrom(((CustomCredential) c).getData());
+                                Log.i(TAG, "Google account chosen, signing in to Firebase");
+                                firebaseAuthWithGoogle(g.getIdToken());
+                            } else {
+                                setBusy(false);
+                                showError("Google sign-in returned an unexpected result.");
+                            }
+                        } catch (Exception ex) {
+                            Log.e(TAG, "Could not read Google credential", ex);
+                            setBusy(false);
+                            showError("Google sign-in failed. Please try again.");
+                        }
                     }
+
                     @Override public void onError(GetCredentialException e) {
                         setBusy(false);
-                        showError("Google sign-in was cancelled or is not available on this device.");
+                        Log.e(TAG, "Google sign-in failed: " + e.getClass().getSimpleName() + " - " + e.getMessage());
+                        if (e instanceof GetCredentialCancellationException) showError("Google sign-in was cancelled.");
+                        else if (e instanceof NoCredentialException) showError("No Google account found on this phone. Add one in Settings > Accounts, then try again.");
+                        else showError("Google sign-in failed. Check your internet connection and update Google Play services.");
                     }
                 });
     }
